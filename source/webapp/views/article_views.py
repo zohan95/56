@@ -18,7 +18,7 @@ class IndexView(ListView):
     context_object_name = 'articles'
     model = Article
     ordering = ['-created_at']
-    paginate_by = 5
+    paginate_by = 3
     paginate_orphans = 1
 
     def get(self, request, *args, **kwargs):
@@ -40,7 +40,7 @@ class IndexView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         if self.search_value:
-            context['query'] = urlencode({'huila': self.search_value})
+            context['query'] = urlencode({'search': self.search_value})
         context['archived_articles'] = self.get_archived_articles()
         return context
 
@@ -70,7 +70,7 @@ class ArticleView(DetailView):
         return context
 
     def paginate_comments_to_context(self, comments, context):
-        paginator = Paginator(comments, 3, 0)
+        paginator = Paginator(comments, 5, 0)
         page_number = self.request.GET.get('page', 1)
         page = paginator.get_page(page_number)
         context['paginator'] = paginator
@@ -175,13 +175,16 @@ class TagView(ListView):
 class ArticleSearchView(FormView):
     template_name = 'article/search.html'
     form_class = FullSearchForm
+    art = None
 
-    def form_valid(self, form):
+    def form_valid(self, form, *args, **kwargs):
         text = form.cleaned_data.get('text')
         author = form.cleaned_data.get('author')
         query = self.get_text_search_query(form, text, author)
         context = self.get_context_data(form=form)
-        context['articles'] = Article.objects.filter(query).distinct()
+        self.art = Article.objects.filter(query).distinct().order_by('-created_at')
+        self.get_context_data()
+        context['articles'] = self.art
         return self.render_to_response(context=context)
 
     def get_text_search_query(self, form, text, author):
@@ -207,5 +210,6 @@ class ArticleSearchView(FormView):
                 query2 = query2 | Q(comments__author__iexact=author)
             if in_comments:
                 query2 = query2 | Q(author__iexact=author)
-
         return query & query2
+
+

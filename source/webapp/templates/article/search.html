@@ -16,6 +16,9 @@
     </form>
     {% if articles %}
         <h1>Results:</h1>
+        {% if is_paginated %}
+            {% include 'partial/pagination.html' %}
+        {% endif %}
         {% include 'article/partial/article_list.html' %}
     {% endif %}
 {% endblock %}
