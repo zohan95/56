@@ -1,0 +1,119 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$150000$rETxGUggP9m6$1+XpTSlJd0TUOGy4a5vygINOKbNt4VBXluA1qSdpgYY=",
+    "last_login": "2019-09-24T13:55:07.905Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2019-09-03T14:37:10.646Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 1,
+  "fields": {
+    "title": "Article",
+    "text": "Article 1",
+    "author": "Me",
+    "created_at": "2019-09-03T14:17:12.139Z",
+    "updated_at": "2019-09-03T14:22:09.383Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 2,
+  "fields": {
+    "title": "Another One",
+    "text": "Another Article",
+    "author": "Me",
+    "created_at": "2019-09-03T14:06:09.002Z",
+    "updated_at": "2019-09-03T14:06:09.002Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 3,
+  "fields": {
+    "title": "Article 3",
+    "text": "Article 3",
+    "author": "He",
+    "created_at": "2019-09-03T14:09:48.915Z",
+    "updated_at": "2019-09-03T14:09:48.915Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 4,
+  "fields": {
+    "title": "Title",
+    "text": "Text",
+    "author": "Author",
+    "created_at": "2019-09-03T14:44:14.453Z",
+    "updated_at": "2019-09-03T14:44:14.453Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 5,
+  "fields": {
+    "title": "Test",
+    "text": "Test",
+    "author": "Test",
+    "created_at": "2019-09-24T05:29:56.892Z",
+    "updated_at": "2019-09-24T05:29:56.892Z"
+  }
+},
+{
+  "model": "webapp.article",
+  "pk": 6,
+  "fields": {
+    "title": "Test 2",
+    "text": "Test 2",
+    "author": "Test 2",
+    "created_at": "2019-09-24T05:31:09.395Z",
+    "updated_at": "2019-09-24T05:31:09.395Z"
+  }
+},
+{
+  "model": "webapp.comment",
+  "pk": 1,
+  "fields": {
+    "article": 1,
+    "text": "Comment 1",
+    "author": "Vasya",
+    "created_at": "2019-09-24T13:57:52.192Z",
+    "updated_at": "2019-09-24T14:14:04.544Z"
+  }
+},
+{
+  "model": "webapp.comment",
+  "pk": 2,
+  "fields": {
+    "article": 1,
+    "text": "Comment 2",
+    "author": "Petya",
+    "created_at": "2019-09-24T13:59:48.693Z",
+    "updated_at": "2019-09-24T13:59:48.693Z"
+  }
+},
+{
+  "model": "webapp.comment",
+  "pk": 3,
+  "fields": {
+    "article": 1,
+    "text": "Comment 3",
+    "author": "\u0410\u043d\u043e\u043d\u0438\u043c",
+    "created_at": "2019-09-24T14:02:20.378Z",
+    "updated_at": "2019-09-24T14:02:20.378Z"
+  }
+}
+]

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block menu %}
+    <li><a href="{% url 'article_update' article.pk %}">Edit</a></li>
+    <li><a href="{% url 'article_delete' article.pk %}">Delete</a></li>
+    {% if article.is_active %}
+        <li><a href="#add_comment">Add Comment</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ article.title }}</h1>
+    <p>Created by {{ article.author }} ({{ article.category|default_if_none:'Без категории' }})
+        at {{ article.created_at|date:'d.m.Y H:i:s' }}</p>
+    <div class="pre">{{ article.text }}</div>
+    {% for i in article.tags.all %}
+        <p>{{ i.name }}</p>
+    {% endfor %}
+    <hr/>
+    <h3>Comments:</h3>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    <div class="comment-list">
+        {% for comment in comments %}
+            <div class="comment">
+                <p>{{ comment.author }} commented at {{ comment.created_at|date:'d.m.Y H:i:s' }}</p>
+                <div class="pre">{{ comment.text }}</div>
+                {% if article.is_active %}
+                    <p class="comment-links">
+                        <a href="{% url 'comment_update' comment.pk %}">Edit</a>
+                        <a href="{% url 'comment_delete' comment.pk %}">Delete</a>
+                    </p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+    </div>
+    {% if is_paginated %}
+        {% include 'partial/pagination.html' %}
+    {% endif %}
+    {% if article.is_active %}
+        <form action="{% url 'article_comment_create' article.pk %}" method="POST" id="add_comment">
+            {% include 'partial/form.html' with button_text='Add' %}
+        </form>
+    {% endif %}
+{% endblock %}
