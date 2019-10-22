@@ -53,7 +53,6 @@ class FullSearchForm(forms.Form):
         author = self.cleaned_data['author']
         in_articles = self.cleaned_data['in_articles']
         in_comments = self.cleaned_data['in_comments']
-        print(author, text)
         if text or author:
             if text:
                 if not (in_title or in_text or in_tags or in_comment_text):
