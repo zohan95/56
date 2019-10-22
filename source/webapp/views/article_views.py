@@ -30,6 +30,7 @@ class IndexView(ListView):
             queryset = queryset.filter(
                 Q(title__icontains=self.search_value)
                 | Q(author__icontains=self.search_value)
+                | Q(tags__name__iexact=self.search_value)
             )
         return queryset
 
@@ -85,21 +86,19 @@ class ArticleCreateView(CreateView):
         return reverse('article_view', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
-        list_tags = form.cleaned_data['tags'].split(',')
-        form.cleaned_data.pop('tags')
-        tags = self.new_tags(list_tags)
-        self.object = form.save()
-        self.object.tags.add(*tags)
-        self.object.save()
+        list_new_tags = form.cleaned_data['tag'].split(',')
+        list_new_tags = self.new_tags(list_new_tags)
+        for i in list_new_tags:
+            form.cleaned_data['tags'] = form.cleaned_data['tags'] | i
         return super().form_valid(form)
 
     def new_tags(self, tags):
-        tags_list = []
+        list_tags = []
         for i in tags:
             if i:
                 Tag.objects.get_or_create(name=i)
-                tags_list.append(Tag.objects.get(name=i))
-        return tags_list
+                list_tags.append(Tag.objects.filter(name=i))
+        return list_tags
 
 
 class ArticleUpdateView(UpdateView):
@@ -138,3 +137,34 @@ class ArticleDeleteView(DeleteView):
         self.object.status = STATUS_ARCHIVED
         self.object.save()
         return redirect(self.get_success_url())
+
+
+class TagView(ListView):
+    template_name = 'article/index.html'
+    context_object_name = 'articles'
+    model = Article
+    ordering = ['-created_at']
+    paginate_by = 5
+    paginate_orphans = 1
+    tag = ''
+
+    def get(self, request, *args, **kwargs):
+        self.tag = kwargs.get('tag')
+        print(self.tag)
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(status=STATUS_ACTIVE)
+        queryset = queryset.filter(
+            Q(tags__name__iexact=self.tag))
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['query'] = urlencode({'tag': self.tag})
+        return context
+
+
+
+
+

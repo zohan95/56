@@ -18,7 +18,7 @@
                 at {{ article.created_at|date:'d.m.Y H:i:s' }}</p>
             <p>
                 {% for i in article.tags.all %}
-                    <a href="?tag={{ i.name }}">{{ i.name  }} </a>
+                    <a href="{% url 'tag_filter_url' i.name %}">{{ i.name  }} </a>
                 {% endfor %}
             </p>
             <p>
