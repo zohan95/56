@@ -3,12 +3,14 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
 from django.views.generic import ListView, DetailView, CreateView, \
-    UpdateView, DeleteView
+    UpdateView, DeleteView, FormView
 
 from webapp.forms import ArticleForm, ArticleCommentForm, SimpleSearchForm
 from webapp.models import Article, STATUS_ARCHIVED, STATUS_ACTIVE
 from django.core.paginator import Paginator
 from webapp.models import Tag
+
+from webapp.forms import FullSearchForm
 
 
 class IndexView(ListView):
@@ -168,3 +170,33 @@ class TagView(ListView):
 
     def get_search_form(self):
         return SimpleSearchForm(data=self.request.GET)
+
+
+class ArticleSearchView(FormView):
+    template_name = 'article/search.html'
+    form_class = FullSearchForm
+
+    def form_valid(self, form):
+        text = form.cleaned_data.get('text')
+        query = self.get_text_search_query(form, text)
+        context = self.get_context_data(form=form)
+        context['articles'] = Article.objects.filter(query).distinct()
+        return self.render_to_response(context=context)
+
+    def get_text_search_query(self, form, text):
+        query = Q()
+        if text:
+            in_title = form.cleaned_data.get('in_title')
+            if in_title:
+                query = query | Q(title__icontains=text)
+            in_text = form.cleaned_data.get('in_text')
+            if in_text:
+                query = query | Q(text__icontains=text)
+            in_tags = form.cleaned_data.get('in_tags')
+            if in_tags:
+                query = query | Q(tags__name__iexact=text)
+            in_comment_text = form.cleaned_data.get('in_comment_text')
+            if in_comment_text:
+                query = query | Q(comments__text__icontains=text)
+
+        return query
