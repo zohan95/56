@@ -38,7 +38,7 @@ class IndexView(ListView):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.form
         if self.search_value:
-            context['query'] = urlencode({'search': self.search_value})
+            context['query'] = urlencode({'huila': self.search_value})
         context['archived_articles'] = self.get_archived_articles()
         return context
 
@@ -149,6 +149,7 @@ class TagView(ListView):
     tag = ''
 
     def get(self, request, *args, **kwargs):
+        self.form = self.get_search_form()
         self.tag = kwargs.get('tag')
         print(self.tag)
         return super().get(request, *args, **kwargs)
@@ -161,10 +162,47 @@ class TagView(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = self.form
         context['query'] = urlencode({'tag': self.tag})
         return context
 
+    def get_search_form(self):
+        return SimpleSearchForm(data=self.request.GET)
 
 
 
+ # def get(self, request, *args, **kwargs):
+ #        self.form = self.get_search_form()
+ #        self.search_value = self.get_search_value()
+ #        return super().get(request, *args, **kwargs)
+ #
+ #    def get_queryset(self):
+ #        queryset = super().get_queryset().filter(status=STATUS_ACTIVE)
+ #        if self.search_value:
+ #            queryset = queryset.filter(
+ #                Q(title__icontains=self.search_value)
+ #                | Q(author__icontains=self.search_value)
+ #                | Q(tags__name__iexact=self.search_value)
+ #            )
+ #        return queryset
+ #
+ #    def get_context_data(self, *, object_list=None, **kwargs):
+ #        context = super().get_context_data(object_list=object_list, **kwargs)
+ #        context['form'] = self.form
+ #        if self.search_value:
+ #            context['query'] = urlencode({'huila': self.search_value})
+ #        context['archived_articles'] = self.get_archived_articles()
+ #        return context
+ #
+ #    def get_archived_articles(self):
+ #        queryset = super().get_queryset().filter(status=STATUS_ARCHIVED)
+ #        return queryset
+ #
+ #    def get_search_form(self):
+ #        return SimpleSearchForm(data=self.request.GET)
+ #
+ #    def get_search_value(self):
+ #        if self.form.is_valid():
+ #            return self.form.cleaned_data['search']
+ #        return None
 
